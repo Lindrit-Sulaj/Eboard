@@ -10,7 +10,7 @@ export default function Home() {
       <pre>
         { JSON.stringify(session, null, 2) }
       </pre>
-      <button onClick={() => signIn("github")}>Sign in with github</button>
+      <button onClick={() => signIn("github", { redirect: true })}>Sign in with github</button>
     </main>
   )
 }
