@@ -12,7 +12,7 @@ async function getSession() {
 export async function getUser() {
   const session = await getSession();
 
-  if (!session?.user) throw new Error("No user is signed in");
+  if (!session?.user) return null;
 
   const user = await prisma.user.findUnique({
     where: {

@@ -9,6 +9,7 @@ import {
   Gem
 } from 'lucide-react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 import { useAuth } from '@/app/AuthProvider'
 import { Button } from './ui/button';
@@ -44,19 +45,36 @@ import {
 
 export default function Navbar() {
   const user = useAuth();
-
   const hasImage = user?.image !== "" || user?.image !== null
 
+  async function handleLogOut() {
+    await signOut();
+  }
+
   return (
-    <nav className='bg-neutral-950 flex justify-between items-center px-6 h-[67px]'>
+    <nav className='bg-neutral-950 flex justify-between items-center px-6 h-[67px] border-b-[1px] border-zinc-800 border-solid'>
       <div className="flex items-center gap-3">
         <Sheet>
           <SheetTrigger>
             <Menu />
           </SheetTrigger>
           <SheetContent side="right">
-            <Button className='w-full mt-6 mb-2' variant="outline">Join company</Button>
-            <Button className='w-full my-2'>New Company</Button>
+            {user ? (
+              <>
+                <Button className='w-full mt-6 mb-2' variant="outline">Join company</Button>
+                <Button className='w-full my-2'>New Company</Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" className='w-full mt-6 mb-2'>
+                  <Link href="/signup">Sign up</Link>
+                </Button>
+                <Button className='w-full my-2'>
+                  <Link href="/login">Log in</Link>
+                </Button>
+              </>
+            )}
+
           </SheetContent>
         </Sheet>
         <h2 className='font-semibold text-lg'>eboard</h2>
@@ -102,12 +120,22 @@ export default function Navbar() {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
+                <AlertDialogAction onClick={handleLogOut}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </div>
+      )}
 
+      {!user && (
+        <div className='flex gap-2'>
+          <Button variant="outline">
+            <Link href="/signup">Sign up</Link>
+          </Button>
+          <Button>
+            <Link href="/login">Log in</Link>
+          </Button>
+        </div>
       )}
     </nav>
   )
