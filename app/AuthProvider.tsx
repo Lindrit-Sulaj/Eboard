@@ -5,7 +5,7 @@ import type { User } from '@prisma/client'
 
 import { getUser } from '@/actions/user';
 
-const ClientContext = createContext<any>({});
+const ClientContext = createContext<null | User>(null);
 export const useAuth = () => useContext(ClientContext)
 
 
