@@ -72,12 +72,16 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Button variant="outline" className='w-full mt-6 mb-2'>
-                  <Link href="/signup">Sign up</Link>
-                </Button>
-                <Button className='w-full my-2'>
-                  <Link href="/login">Log in</Link>
-                </Button>
+                <Link href="/signup">
+                  <Button variant="outline" className='w-full mt-6 mb-2'>
+                    Sign up
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button className='w-full my-2'>
+                    Log in
+                  </Button>
+                </Link>
               </>
             )}
 
@@ -135,12 +139,16 @@ export default function Navbar() {
 
       {!user && (
         <div className='flex gap-2'>
-          <Button variant="outline">
-            <Link href="/signup">Sign up</Link>
-          </Button>
-          <Button>
-            <Link href="/login">Log in</Link>
-          </Button>
+          <Link href="/signup">
+            <Button variant="outline">
+              Sign up
+            </Button>
+          </Link>
+          <Link href="/login">
+            <Button>
+              Log in
+            </Button>
+          </Link>
         </div>
       )}
     </nav>

@@ -73,7 +73,7 @@ export default function SignupPage() {
         </CardContent>
         <CardFooter className='flex justify-end gap-2'>
           <Button variant="outline">Cancel</Button>
-          <Button onClick={handleSubmit}>Create account</Button>
+          <Button onClick={handleSubmit}>Log in</Button>
         </CardFooter>
 
         <OAuth />
