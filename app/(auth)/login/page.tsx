@@ -72,7 +72,7 @@ export default function SignupPage() {
           </div>
         </CardContent>
         <CardFooter className='flex justify-end gap-2'>
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline" onClick={() => router.push('/')}>Cancel</Button>
           <Button onClick={handleSubmit}>Log in</Button>
         </CardFooter>
 

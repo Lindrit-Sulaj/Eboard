@@ -72,7 +72,7 @@ export default function SignupPage() {
   }, [])
 
   return (
-    <main className='h-[calc(100vh-67px)] flex justify-center items-center px-4'>
+    <main className='min-h-[calc(100vh-67px)] py-4 lg:py-0 flex justify-center items-center px-4'>
       <Card className='w-full max-w-md'>
         <CardHeader>
           <CardTitle>Signup</CardTitle>
@@ -101,7 +101,7 @@ export default function SignupPage() {
           </div>
         </CardContent>
         <CardFooter className='flex justify-end gap-2'>
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline" onClick={() => router.push('/')}>Cancel</Button>
           <Button onClick={handleSubmit}>Create account</Button>
         </CardFooter>
 
