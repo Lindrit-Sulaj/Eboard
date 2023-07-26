@@ -16,6 +16,11 @@ module.exports = {
       },
     },
     extend: {
+      colors: {
+        zinc: {
+          925: "rgb(15,15,18)"
+        }
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

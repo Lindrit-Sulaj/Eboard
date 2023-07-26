@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useContext, createContext } from 'react'
 import { SessionProvider, useSession } from "next-auth/react";
 import type { User } from '@prisma/client'
+import Spinner from '@/components/Spinner';
 
 import { getUser } from '@/actions/user';
 
@@ -22,10 +23,14 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 function ClientProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const [user, setUser] = useState<null | User>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
+
     if (status === "unauthenticated") {
-      return setUser(null);
+      setLoading(false);
+      return setUser(null)
     };
 
     async function loadUser() {
@@ -33,6 +38,7 @@ function ClientProvider({ children }: { children: React.ReactNode }) {
         .then(res => setUser(res))
         .catch(err => console.info(err))
 
+      setLoading(false)
       return user;
     }
     
@@ -41,7 +47,7 @@ function ClientProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ClientContext.Provider value={user}>
-      {status === "loading" ? <p>Loading...</p> : children}
+      {loading ? <Spinner /> : children}
     </ClientContext.Provider>
   )
 }

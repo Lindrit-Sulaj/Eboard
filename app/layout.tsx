@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className='dark'>
-      <body className={`${inter.className} bg-zinc-900 text-white`}>
+      <body className={`${inter.className} bg-zinc-925 text-white`}>
         <AuthProvider>
           <Navbar />
           {children}

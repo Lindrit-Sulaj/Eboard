@@ -45,7 +45,13 @@ import {
 
 export default function Navbar() {
   const user = useAuth();
-  const hasImage = user?.image !== "" || user?.image !== null
+
+  let hasImage;
+
+  if (user) {
+    hasImage = user.image !== "" && user.image !== null
+  }
+
 
   async function handleLogOut() {
     await signOut();
@@ -86,7 +92,7 @@ export default function Navbar() {
           <Button className='hidden lg:block'>New Company</Button>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              {hasImage ? <img className='w-8 h-8 rounded-full' src={user.image!} /> : user.name}
+              {hasImage ? <img className='w-8 h-8 rounded-full' src={user.image!} /> : <p className='px-2 py-1 rounded-md bg-zinc-800'>{user.name}</p>}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>My account</DropdownMenuLabel>
