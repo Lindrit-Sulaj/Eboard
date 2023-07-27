@@ -44,13 +44,15 @@ model User {
   email         String?   @unique
   emailVerified Boolean?
   image         String?
+  taskIds String[] @db.ObjectId
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   accounts      Account[]
   sessions      Session[]
-  adminCompanies Company[] @relation("admin")
+  members Member[]
+  invitations Invitation[]
 }
 
 model Company {
@@ -59,16 +61,96 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  memberIds String[]
-  adminId String @db.ObjectId @unique
-
+  description String?
   location String?
   logo String?
   industry String?
+  
+  members Member[]
+  projects Project[]
+  invitations Invitation[]
+}
 
-  admin User @relation("admin", fields: [adminId], references: [id])
+model Project {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  companyId String @db.ObjectId
+  title String
+  priority Priority @default(Medium)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  description String?
+
+  tasks Task[]
+  company Company @relation(fields: [companyId], references: [id])
 }
 
 model Member {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId String @db.ObjectId
+  companyId String @db.ObjectId
+
+  name String
+  email String
+  image String?
+  role Role @default(Editor)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Task {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  status Status @default(Todo)
+  projectId String @db.ObjectId
+  createdAt DateTime @default(now())
+  
+  description String?
+  priority Priority @default(Medium)
+  dueDate DateTime?
+  label Label?
+
+  project Project @relation(fields: [projectId], references: [id])
+}
+
+model Invitation {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  companyId String @db.ObjectId
+  message String?
+  role Role
+
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+  company Company @relation(fields: [companyId], references: [id])
+}
+
+enum Priority {
+  Lown
+  Medium
+  High
+}
+
+enum Role {
+  Reader
+  Editor
+  Admin
+}
+
+enum Status {
+  Todo
+  In_progress
+  Completed
+}
+
+enum Label {
+  Urgent
+  Important
+  Bub
+  Feature
+  Request
+  Documentation
 }
