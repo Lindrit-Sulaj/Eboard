@@ -64,7 +64,7 @@ export default function SignupPage() {
       <Card className='w-full max-w-md'>
         <CardHeader>
           <CardTitle>Log in</CardTitle>
-          <CardDescription>Log in to your existin account</CardDescription>
+          <CardDescription>Log in to your existing account</CardDescription>
         </CardHeader>
         <CardContent>
           <div className='mb-3'>

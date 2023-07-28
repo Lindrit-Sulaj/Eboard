@@ -46,6 +46,7 @@ import {
 
 const paths: string[] = [
   "/company/join",
+  "/"
 ]
 
 export default function Navbar() {
@@ -76,7 +77,7 @@ export default function Navbar() {
   }, [path])
 
   return (
-    <nav className={`bg-neutral-950 flex justify-between items-center px-6 h-[67px] ${bottomBorder && "border-soid border-[1px] border-neutral-800"}`}>
+    <nav className={`bg-neutral-950 flex justify-between items-center px-6 h-[67px] ${bottomBorder && "border-solid border-b-[1px] border-b-neutral-800"}`}>
       <div className="flex items-center gap-3">
         <Sheet>
           <SheetTrigger>
@@ -109,7 +110,7 @@ export default function Navbar() {
 
           </SheetContent>
         </Sheet>
-        <h2 className='font-semibold text-lg'>eboard</h2>
+        <h2 className='font-semibold text-lg'><Link href="/">eboard</Link></h2>
       </div>
 
       {user && (
