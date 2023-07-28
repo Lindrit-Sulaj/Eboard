@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Menu,
   Settings,
@@ -9,6 +9,7 @@ import {
   Gem
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 import { useAuth } from '@/app/AuthProvider'
@@ -43,8 +44,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 
+const paths: string[] = [
+  "/company/join",
+]
+
 export default function Navbar() {
   const user = useAuth();
+  const path = usePathname();
 
   let hasImage;
 
@@ -57,8 +63,20 @@ export default function Navbar() {
     await signOut();
   }
 
+  const bottomBorder = useMemo(() => {
+    let borderExists: boolean = false
+
+    for (let pathWithBorder of paths) {
+      if (pathWithBorder === path) {
+        borderExists = true
+      }
+    };
+
+    return borderExists
+  }, [path])
+
   return (
-    <nav className='bg-neutral-950 flex justify-between items-center px-6 h-[67px]'>
+    <nav className={`bg-neutral-950 flex justify-between items-center px-6 h-[67px] ${bottomBorder && "border-soid border-[1px] border-neutral-800"}`}>
       <div className="flex items-center gap-3">
         <Sheet>
           <SheetTrigger>
@@ -67,8 +85,12 @@ export default function Navbar() {
           <SheetContent side="right">
             {user ? (
               <>
-                <Button className='w-full mt-6 mb-2' variant="outline">Join company</Button>
-                <Button className='w-full my-2'>New Company</Button>
+                <Link href="/">
+                  <Button className='w-full mt-6 mb-2' variant="outline">Join company</Button>
+                </Link>
+                <Link href="/company/new">
+                  <Button className='w-full my-2'>New Company</Button>
+                </Link>
               </>
             ) : (
               <>
@@ -92,8 +114,12 @@ export default function Navbar() {
 
       {user && (
         <div className='flex items-center gap-2'>
-          <Button className='hidden lg:block' variant="outline">Join Company</Button>
-          <Button className='hidden lg:block'>New Company</Button>
+          <Link href="/">
+            <Button className='hidden lg:block' variant="outline">Join Company</Button>
+          </Link>
+          <Link href="/company/new">
+            <Button className='hidden lg:block'>New Company</Button>
+          </Link>
           <DropdownMenu>
             <DropdownMenuTrigger>
               {hasImage ? <img className='w-8 h-8 rounded-full' src={user.image!} /> : <p className='px-2 py-1 rounded-md bg-zinc-800'>{user.name}</p>}

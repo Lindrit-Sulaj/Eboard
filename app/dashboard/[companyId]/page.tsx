@@ -8,7 +8,6 @@ export default async function CompanyPage({ params, searchParams }: { params: {[
   return (
     <main>
       <Menu />
-      <pre>{JSON.stringify(member, null, 2)}</pre>
     </main>
   )
 }

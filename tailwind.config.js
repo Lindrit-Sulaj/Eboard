@@ -18,7 +18,7 @@ module.exports = {
     extend: {
       colors: {
         zinc: {
-          925: "rgb(15,15,18)"
+          925: "rgb(17,17,20)"
         }
       },
       keyframes: {

@@ -58,13 +58,14 @@ model User {
 model Company {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
+  industry Industry
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   description String?
   location String?
   logo String?
-  industry String?
+  website String?
   
   members Member[]
   projects Project[]
@@ -128,6 +129,32 @@ model Invitation {
   createdAt DateTime @default(now())
   user User @relation(fields: [userId], references: [id])
   company Company @relation(fields: [companyId], references: [id])
+}
+
+enum Industry {
+  IT_Software
+  Healthcare
+  Finance
+  Education
+  ECommerce
+  Retail
+  Manufacturing
+  Entertainment
+  RealEstate
+  Travel_Hospitality
+  Marketing_Advertising
+  Automotive
+  Agriculture
+  Energy
+  Construction
+  Telecommunications
+  Media
+  Fashion_Apparel
+  Sports
+  Food_Beverage
+  NonProfit
+  Government
+  Other
 }
 
 enum Priority {
