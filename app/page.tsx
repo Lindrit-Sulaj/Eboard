@@ -1,5 +1,3 @@
-import { createTask } from "@/actions/task"
-
 export default async function Home() {
   return (
     <main className="p-20">

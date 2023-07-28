@@ -58,7 +58,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className='bg-neutral-950 flex justify-between items-center px-6 h-[67px] border-b-[1px] border-zinc-800 border-solid'>
+    <nav className='bg-neutral-950 flex justify-between items-center px-6 h-[67px]'>
       <div className="flex items-center gap-3">
         <Sheet>
           <SheetTrigger>

@@ -25,6 +25,7 @@ export default function SignupPage() {
   const session = useSession();
   const { toast } = useToast();
 
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,6 +53,8 @@ export default function SignupPage() {
       })
     }
 
+    setLoading(true);
+
     await signUpUser({
       name,
       email,
@@ -62,6 +65,8 @@ export default function SignupPage() {
       email,
       password,
       callbackUrl: `${window.location.origin}/`
+    }).finally(() => {
+      setLoading(false);
     })
   }
 
@@ -102,7 +107,9 @@ export default function SignupPage() {
         </CardContent>
         <CardFooter className='flex justify-end gap-2'>
           <Button variant="outline" onClick={() => router.push('/')}>Cancel</Button>
-          <Button onClick={handleSubmit}>Create account</Button>
+          <Button onClick={handleSubmit}>
+            {loading ? "Creating account..." : "Create account"}
+          </Button>
         </CardFooter>
 
         <OAuth />

@@ -6,7 +6,7 @@ import { options } from "@/app/api/auth/[...nextauth]/options";
 import prisma from "@/lib/prisma";
 
 
-async function getSession() {
+export async function getSession() {
   return await getServerSession(options)
 }
 
@@ -18,6 +18,9 @@ export async function getUser() {
   const user = await prisma.user.findUnique({
     where: {
       email: session.user.email!
+    },
+    include: {
+      members: true
     }
   });
 

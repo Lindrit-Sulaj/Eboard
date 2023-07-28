@@ -25,6 +25,7 @@ export default function SignupPage() {
   const session = useSession();
   const { toast } = useToast();
 
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,6 +37,8 @@ export default function SignupPage() {
       })
     }
 
+    setLoading(true);
+
     await signIn("credentials", {
       email,
       password,
@@ -45,7 +48,9 @@ export default function SignupPage() {
         title: 'Something went wrong',
         description: err.message
       })
-    ))
+    )).finally(() => {
+      setLoading(false);
+    })
   }
 
   useEffect(() => {
@@ -73,7 +78,9 @@ export default function SignupPage() {
         </CardContent>
         <CardFooter className='flex justify-end gap-2'>
           <Button variant="outline" onClick={() => router.push('/')}>Cancel</Button>
-          <Button onClick={handleSubmit}>Log in</Button>
+          <Button onClick={handleSubmit}>
+            {loading ? "Logging in..." : "Log in"}
+          </Button>
         </CardFooter>
 
         <OAuth />
