@@ -46,7 +46,8 @@ import {
 
 const paths: string[] = [
   "/company/join",
-  "/"
+  "/",
+  "/dashboard"
 ]
 
 export default function Navbar() {

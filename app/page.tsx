@@ -21,7 +21,6 @@ export default async function Home() {
         </div>
       </main>
     )
-
   }
 
   return (
@@ -29,7 +28,7 @@ export default async function Home() {
       <p className="font-semibold mb-2">eboard</p>
       <h1 className="font-bold text-2xl md:text-4xl">Welcome {session.user?.name ? session.user?.name : session.user?.email}</h1>
       <p className="text-sm md:text-[15px] max-w-md text-center mt-2 text-zinc-400">Go to dashboard to view your companies</p>
-      <Link href="/" className="block mt-3">
+      <Link href="/dashboard" className="block mt-2">
         <Button>Go to dashboard</Button>
       </Link>
     </main>
