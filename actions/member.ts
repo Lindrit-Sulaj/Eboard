@@ -26,3 +26,14 @@ export async function createMember(companyId: string, user: User, role: "Reader"
     ]
   })
 }
+
+export async function getUserMembers(userId: string) {
+  return await prisma.member.findMany({
+    where: {
+      userId: userId
+    },
+    include: {
+      company: true
+    }
+  })
+}
