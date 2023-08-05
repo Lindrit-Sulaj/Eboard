@@ -1,11 +1,23 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation';
 import { GanttChartSquare, Users2, CheckCircle2, Settings } from 'lucide-react';
 
 import { Button } from '../ui/button'
 
 export default function Menu() {
+  const path = usePathname();
+  const router = useRouter();
+
   const [selectedTab, setSelectedTab] = useState<string>("");
+
+  useEffect(() => {
+    if (selectedTab === "") {
+      router.push(path);
+    } else {
+      router.push(`${path}?tab=${selectedTab}`)
+    }
+  }, [selectedTab]);
   
   return (
     <div className="flex overflow-x-auto gap-1 bg-zinc-950 border-solid border-b-[1px] border-b-zinc-800 px-1 md:px-4">

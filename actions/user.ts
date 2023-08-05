@@ -47,3 +47,26 @@ export async function signUpUser({ name, email, password, image }: { name: strin
 
   return user;
 }
+
+export async function updateUser(data : { name?: string, password?: string }) {
+  const session = await getSession();
+  let updatedData: { name?: string, hashedPassword?: string } = {}
+  
+  if (data.name) {
+    updatedData.name = data.name
+  };
+
+  if (data.password) {
+    const hashedPassword = await bcrypt.hash(data.password, 12);
+    updatedData.hashedPassword = hashedPassword;
+  }
+
+  return await prisma.user.update({
+    where: {
+      email: session?.user?.email!
+    },
+    data: {
+      ...updatedData
+    }
+  })
+}

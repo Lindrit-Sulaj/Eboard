@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import type { Task, Member, Company } from '@prisma/client';
 import { Info, MoreVertical, X, Layout, Hourglass, Users2, Bell, Pin, Mail, CheckCircle2, Link as LucideLink, Plus } from 'lucide-react';
 import Link from 'next/link';
@@ -31,9 +32,11 @@ import {
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
+import UserSettings from '@/components/UserSettings';
 
 export default function DashboardPage() {
   const user = useAuth();
+  const session = useSession();
   const router = useRouter();
 
   const [tasks, setTasks] = useState<Task[] | null>(null);
@@ -41,10 +44,10 @@ export default function DashboardPage() {
   const [searchCompanies, setSearchCompanies] = useState("")
 
   useEffect(() => {
-    if (!user) {
+    if (session.status === "unauthenticated") {
       router.push('/signup')
     }
-  }, [user])
+  }, [session])
 
 
   useEffect(() => {
@@ -78,12 +81,12 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <Button>Edit profile</Button>
+            <Button onClick={() => signOut()}>Log out</Button>
           </div>
           <div className="flex items-start gap-4 mt-4 h-full">
             <div className="w-2/3 bg-zinc-950 border-solid border-[1px] rounded-md border-zinc-800 h-full">
               {!tasks && [1, 2, 3, 4, 5, 6, 7].map((elem, index) => (
-                <>
+                <div key={index}>
                   <div className='p-4 flex items-center justify-between'>
                     <div className='w-full'>
                       <Skeleton className='w-[60px] h-3' />
@@ -96,7 +99,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <Separator className='dark:bg-zinc-900' />
-                </>
+                </div>
               ))}
               {tasks?.length! > 0 && tasks?.map(task => (
                 <Task key={task.id} task={task} />
@@ -158,7 +161,9 @@ export default function DashboardPage() {
         <TabsContent value="companies">
           <div className="search mb-3 flex gap-2">
             <Input placeholder='Search for companies' value={searchCompanies} onChange={(e) => setSearchCompanies(e.target.value)} className='grow' />
-            <Button className='whitespace-nowrap'> Add new <Plus className='ml-1 hidden md:block' size={16} /></Button>
+            <Link href="/company/new">
+              <Button className='whitespace-nowrap'> Add new <Plus className='ml-1 hidden md:block' size={16} /></Button>
+            </Link>
           </div>
           {members && (
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
@@ -184,32 +189,7 @@ export default function DashboardPage() {
           )}
         </TabsContent>
         <TabsContent value="settings">
-          <div className="heading">
-            <h2 className='font-semibold text-xl md:text-2xl'>Settings</h2>
-            <p className='text-sm text-zinc-400 max-w-2xl'>Configure and personalize your account preferences.</p>
-          </div>
-          <div className="account bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md mt-6">
-            <div className="px-8 pt-8 pb-2">
-              <h4 className='font-semibold text-lg'>Your profile</h4>
-              <p className='text-zinc-400 text-sm'>Change your name or password</p>
-            </div>
-            <form>
-              <div className='my-3 max-w-[380px] px-8'>
-                <Label htmlFor='username'>Username</Label>
-                <Input className='mt-1' id="username" />
-              </div>
-              <div className='my-3 max-w-[380px] px-8'>
-                <Label htmlFor='password'>Password</Label>
-                <Input className='mt-1' id="password" />
-              </div>
-              <div className='mt-6 flex justify-end bg-neutral-900 py-3 px-4 border-solid border-t-[1px] border-t-zinc-800'>
-                <Button size="sm">Save changes</Button>
-              </div>
-            </form>
-          </div>
-          <div className="mt-6 bg-zinc-950 border-solid border-zinc-800 p-8 border-[1px]">
-            <p className="text-center text-zinc-300">More options are coming soon</p>
-          </div>
+          <UserSettings />
         </TabsContent>
       </Tabs>
     </main >
