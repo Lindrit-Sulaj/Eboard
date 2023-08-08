@@ -31,3 +31,15 @@ export async function createCompany(data: { name: string, industry: any, descrip
 
   return company;
 }
+
+export async function getCompany(companyId: string) {
+  return await prisma.company.findUnique({
+    where: {
+      id: companyId
+    },
+    include: {
+      members: true,
+      projects: true
+    }
+  })
+}

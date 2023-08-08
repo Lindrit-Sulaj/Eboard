@@ -12,13 +12,9 @@ export default function Menu() {
   const [selectedTab, setSelectedTab] = useState<string>("");
 
   useEffect(() => {
-    if (selectedTab === "") {
-      router.push(path);
-    } else {
-      router.push(`${path}?tab=${selectedTab}`)
-    }
+    router.push(`${path}?tab=${selectedTab}`)
   }, [selectedTab]);
-  
+
   return (
     <div className="flex overflow-x-auto gap-1 bg-zinc-950 border-solid border-b-[1px] border-b-zinc-800 px-1 md:px-4">
       <Button className={`text-zinc-400 text-[14px] md:text-sm hover:bg-transparent ${selectedTab === "" && "border-solid border-b-2 border-b-orange-400 text-zinc-50 rounded-b-none"}`} variant={selectedTab === "" ? "ghost" : "ghost"} onClick={() => setSelectedTab("")}><GanttChartSquare size={18} className='mr-2' />Overview</Button>
