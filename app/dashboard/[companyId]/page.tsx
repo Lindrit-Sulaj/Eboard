@@ -9,6 +9,7 @@ import { Industry } from '@/ts/data'
 import { getCompany } from '@/actions/company'
 import { getMember } from '@/actions/member'
 import { Separator } from '@/components/ui/separator'
+import Settings from '@/components/dashboard/Settings'
 
 export default async function CompanyPage({ params, searchParams }: { params: { [key: string]: string }, searchParams: { [key: string]: string } }) {
   const member = await getMember(params.companyId)
@@ -114,9 +115,11 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
           </div>
         </div>
 
+      ) : searchParams.tab === "settings" ? (
+        <Settings currentMember={member} company={company} />
       ) : (
         <div>
-          hi
+          This tab doesn't exist
         </div>
       )}
     </main>

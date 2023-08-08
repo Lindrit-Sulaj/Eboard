@@ -62,10 +62,10 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  description String?
+  description String
   location String?
   logo String?
-  website String?
+  website String
   
   members Member[]
   projects Project[]

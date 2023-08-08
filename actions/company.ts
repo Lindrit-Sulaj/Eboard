@@ -43,3 +43,14 @@ export async function getCompany(companyId: string) {
     }
   })
 }
+
+export async function editCompany(id: string, data: { name: string, description: string, location?: string, website: string }) {
+  return await prisma.company.update({
+    where: {
+      id
+    },
+    data: {
+      ...data
+    }
+  })
+}
