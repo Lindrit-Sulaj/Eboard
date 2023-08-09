@@ -78,7 +78,7 @@ export default function SignupPage() {
         </CardContent>
         <CardFooter className='flex justify-end gap-2'>
           <Button variant="outline" onClick={() => router.push('/')}>Cancel</Button>
-          <Button onClick={handleSubmit}>
+          <Button disabled={loading} onClick={handleSubmit}>
             {loading ? "Logging in..." : "Log in"}
           </Button>
         </CardFooter>

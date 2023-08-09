@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react'
 import { Company, Member } from '@prisma/client'
+import { MoreVertical } from 'lucide-react';
 
+import CompanyMember from './CompanyMember';
 import { editCompany } from '@/actions/company';
 import { Textarea } from '../ui/textarea';
 import { Input } from '../ui/input';
@@ -11,14 +13,14 @@ import { Button } from '../ui/button';
 import { useToast } from '../ui/use-toast';
 
 interface SettingsProps {
-  company: Company;
+  company: Company & { members: Member[] };
   currentMember: Member;
 }
 
-const allPanels: ["General", "Members", "Invitations", "Projects"] = ["General", "Members", "Invitations", "Projects"]
+const allPanels: ["General", "Roles", "Invitations", "Projects"] = ["General", "Roles", "Invitations", "Projects"]
 
 export default function Settings({ company, currentMember }: SettingsProps) {
-  const [panel, setPanel] = useState<"General" | "Members" | "Invitations" | "Projects">("General")
+  const [panel, setPanel] = useState<"General" | "Roles" | "Invitations" | "Projects">("General")
 
   return (
     <div className='flex max-w-screen-xl mx-auto bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md my-10'>
@@ -31,6 +33,30 @@ export default function Settings({ company, currentMember }: SettingsProps) {
       </div>
       <div className='px-6 py-8 w-5/6'>
         {panel === "General" && <General company={company} currentMember={currentMember} />}
+        {panel === "Roles" && <Roles company={company} currentMember={currentMember} />}
+      </div>
+    </div>
+  )
+}
+
+function Roles({ company, currentMember }: SettingsProps) {
+  if (currentMember.role !== "Admin") {
+    return (
+      <div>
+        You don't have permission to view this settings panel
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <h2 className='font-semibold text-xl'>Roles Settings</h2>
+      <p className='text-[15px] text-zinc-400 max-w-xl mt-1'>Manage member roles and permissions, ensure that each member has the appropiate access to the company</p>
+
+      <div className='flex flex-col gap-y-4 mt-8'>
+        {company.members.map(member => (
+          <CompanyMember key={member.id} member={member} />
+        ))}
       </div>
     </div>
   )
@@ -81,7 +107,7 @@ function General({ company, currentMember }: SettingsProps) {
         </div>
 
         <div className="flex justify-end">
-          <Button>{loading ? "Saving changes" : "Save changes"}</Button>
+          <Button disabled={loading}>{loading ? "Saving changes..." : "Save changes"}</Button>
         </div>
       </form>
 

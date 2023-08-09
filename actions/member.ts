@@ -1,5 +1,5 @@
 "use server"
-import type { User } from "@prisma/client";
+import type { User, Role } from "@prisma/client";
 
 import { getUser } from "./user";
 import prisma from "@/lib/prisma";
@@ -34,6 +34,25 @@ export async function getUserMembers(userId: string) {
     },
     include: {
       company: true
+    }
+  })
+}
+
+export async function editMember(memberId: string, data: { role?: Role, name?: string, image?: string  } = {}) {
+  return await prisma.member.update({
+    where: {
+      id: memberId
+    },
+    data: {
+      ...data
+    }
+  })
+}
+
+export async function removeMember(memberId: string) {
+  return await prisma.member.delete({
+    where: {
+      id: memberId
     }
   })
 }
