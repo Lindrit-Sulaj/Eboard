@@ -47,7 +47,7 @@ import {
 const paths: string[] = [
   "/company/join",
   "/",
-  "/dashboard"
+  "/dashboard/:id/invite",
 ]
 
 export default function Navbar() {
@@ -68,8 +68,27 @@ export default function Navbar() {
   const bottomBorder = useMemo(() => {
     let borderExists: boolean = false
 
+    function dynamicRoute(dynamicPath: string): boolean {
+      let routeMatches: boolean = true;
+
+      let pages = dynamicPath.split("/").splice(1);
+      let pathArray = path.split('/').splice(1)
+
+      for (let i = 0; i < pages.length; i++) {
+        if (pages[i] === pathArray[i]) {
+          continue
+        } else if (!pages[i].includes(":") && pages[i] !== pathArray[i]) {
+          routeMatches = false;
+        }
+      };
+
+      return routeMatches;
+    }
+
     for (let pathWithBorder of paths) {
       if (pathWithBorder === path) {
+        borderExists = true
+      } else if (pathWithBorder.includes(':') && dynamicRoute(pathWithBorder)) {
         borderExists = true
       }
     };

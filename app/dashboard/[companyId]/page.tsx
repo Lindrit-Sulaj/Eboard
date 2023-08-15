@@ -92,8 +92,8 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
         <div className="max-w-screen-xl mx-auto my-10 bg-zinc-950 rounded-md border-solid border-[1px] p-6 border-zinc-800">
           <div className='flex justify-between items-center'>
             <h2 className='font-semibold text-xl'>Members</h2>
-            <Link href={`/dashboard/${params.companyId}/invite`}>
-              <Button size="sm">Send invitation</Button>
+            <Link href={member.role === "Admin" ? `/dashboard/${params.companyId}/invite` : ''}>
+              <Button size="sm" disabled={member.role !== "Admin"}>Send invitation</Button>
             </Link>
           </div>
           <div className='max-w-screen-xl mx-auto mt-5 flex flex-col gap-y-3'>

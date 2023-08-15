@@ -1,12 +1,12 @@
 "use client"
 import React, { useState, useEffect, useContext, createContext } from 'react'
 import { SessionProvider, useSession } from "next-auth/react";
-import type { User } from '@prisma/client'
+import type { Member, User } from '@prisma/client'
 import Spinner from '@/components/Spinner';
 
 import { getUser } from '@/actions/user';
 
-const ClientContext = createContext<null | User>(null);
+const ClientContext = createContext<null | User & { members: Member[] }>(null);
 export const useAuth = () => useContext(ClientContext)
 
 
@@ -22,7 +22,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
 function ClientProvider({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
-  const [user, setUser] = useState<null | User>(null);
+  const [user, setUser] = useState<null | User & { members: Member[] }>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

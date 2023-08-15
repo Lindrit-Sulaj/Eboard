@@ -43,7 +43,7 @@ function Roles({ company, currentMember }: SettingsProps) {
   if (currentMember.role !== "Admin") {
     return (
       <div>
-        You don't have permission to view this settings panel
+        You don't have permission to view this panel
       </div>
     )
   }

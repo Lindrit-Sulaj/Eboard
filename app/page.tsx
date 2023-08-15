@@ -2,12 +2,13 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import type { Task, Member, Company } from '@prisma/client';
-import { Info, MoreVertical, X, Layout, Hourglass, Users2, Bell, Pin, Mail, CheckCircle2, Link as LucideLink, Plus } from 'lucide-react';
+import { type Task, type Member, type Company, Invitation } from '@prisma/client';
+import { Info, MoreVertical, X, Layout, Hourglass, Users2, Bell, Pin, Mail, CheckCircle2, Link as LucideLink, Plus, Check } from 'lucide-react';
 import Link from 'next/link';
 
 import { getTasks, editTask } from '@/actions/task';
 import { getUserMembers } from '@/actions/member';
+import { getInvitations } from '@/actions/invite';
 
 import { Industry } from '@/ts/data';
 import { Badge } from '@/components/ui/badge';
@@ -34,11 +35,16 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import UserSettings from '@/components/UserSettings';
 
+interface InvitationInterface extends Invitation {
+  company: Company
+}
+
 export default function DashboardPage() {
   const user = useAuth();
   const session = useSession();
   const router = useRouter();
 
+  const [invitations, setInvitations] = useState<InvitationInterface[] | null>(null);
   const [tasks, setTasks] = useState<Task[] | null>(null);
   const [members, setMembers] = useState<any>(null);
   const [searchCompanies, setSearchCompanies] = useState("")
@@ -59,6 +65,11 @@ export default function DashboardPage() {
       return await getUserMembers(user?.id!).then(setMembers)
     }
 
+    async function fetchInvitations() {
+      return await getInvitations('user', user?.email!).then(setInvitations);
+    }
+
+    fetchInvitations();
     fetchMembers();
     fetchTasks();
   }, [])
@@ -69,6 +80,7 @@ export default function DashboardPage() {
         <TabsList className='border-solid my-4 border-b-[1px] border-b-zinc-800'>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value='companies'>Companies</TabsTrigger>
+          <TabsTrigger value="invitations">Invitations</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
@@ -187,6 +199,33 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
+        </TabsContent>
+        <TabsContent value="invitations">
+          {invitations?.length === 0 && <p>You have no pending invites</p>}
+
+          {invitations?.map(invitation => (
+            <div key={invitation.id} className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md px-6 py-4 flex justify-between gap-2'>
+              <div>
+                <h3 className='font-semibold'>{invitation.company.name} <span className="text-zinc-400 text-[14px] ml-1">{Industry[invitation.company.industry]}</span></h3>
+                {invitation.message && <p className='text-[15px] text-zinc-300 my-1'>{invitation.message}</p>}
+
+                <p className='mt-3 text-[15px] flex items-center gap-2'>By {invitation.senderName} <Badge>Admin</Badge></p>
+              </div>
+              <div className='flex flex-col gap-2 items-center'>
+                <Button className='dark:bg-transparent dark:hover:bg-red-500' size="icon">
+                  <X className='text-white' />
+                </Button>
+                <Button className='dark:bg-transparent dark:hover:bg-green-500' size="icon">
+                  <Check className='text-white' />
+                </Button>
+              </div>
+
+            </div>
+          ))}
+
+          <pre>
+            {JSON.stringify(invitations, null, 2)}
+          </pre>
         </TabsContent>
         <TabsContent value="settings">
           <UserSettings />

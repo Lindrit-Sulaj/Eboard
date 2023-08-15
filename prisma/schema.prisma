@@ -52,7 +52,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   members Member[]
-  invitations Invitation[]
 }
 
 model Company {
@@ -121,13 +120,13 @@ model Task {
 
 model Invitation {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId
   companyId String @db.ObjectId
+  email String
+  senderName String
   message String?
   role Role
 
   createdAt DateTime @default(now())
-  user User @relation(fields: [userId], references: [id])
   company Company @relation(fields: [companyId], references: [id])
 }
 
