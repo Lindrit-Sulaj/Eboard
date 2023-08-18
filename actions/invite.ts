@@ -1,6 +1,6 @@
 "use server"
 import prisma from "@/lib/prisma"
-import { Role } from "@prisma/client"
+import { InvitationStatus, Role } from "@prisma/client"
 import { getCompany } from "./company"
 
 export async function createInvitation(data: { email: string, companyId: string, senderName: string, role: Role, message?: string }) {
@@ -19,12 +19,41 @@ export async function createInvitation(data: { email: string, companyId: string,
 }
 
 export async function getInvitations(by: 'user' | 'company', val: string) {
+  if (by === "user") {
+    return await prisma.invitation.findMany({
+      where: {
+        email: val,
+      },
+      include: {
+        company: true
+      },
+      orderBy: { createdAt: 'asc' }
+    })
+  }
+  
   return await prisma.invitation.findMany({
     where: {
-      ...(by === "user" ? { email: val } : { companyId: val })
+      companyId: val
     },
-    include: {
-      company: true
+    orderBy: {
+      createdAt: 'asc'
     }
+  })
+}
+
+export async function changeInvitationStatus(id: string, status: InvitationStatus) {
+  return await prisma.invitation.update({
+    where: {
+      id
+    },
+    data: {
+      status
+    }
+  })
+}
+
+export async function deleteInvitation(id: string) {
+  return await prisma.invitation.delete({
+    where: { id }
   })
 }

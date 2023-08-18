@@ -1,11 +1,14 @@
 "use client"
 
-import React, { useState } from 'react'
-import { Company, Member } from '@prisma/client'
+import React, { useEffect, useState } from 'react'
+import { Company, Invitation, Member } from '@prisma/client'
 import { MoreVertical } from 'lucide-react';
 
-import CompanyMember from './CompanyMember';
 import { editCompany } from '@/actions/company';
+import { getInvitations, deleteInvitation } from '@/actions/invite';
+
+import CompanyMember from './CompanyMember';
+import { Badge } from '../ui/badge';
 import { Textarea } from '../ui/textarea';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -34,6 +37,7 @@ export default function Settings({ company, currentMember }: SettingsProps) {
       <div className='px-6 py-8 w-5/6'>
         {panel === "General" && <General company={company} currentMember={currentMember} />}
         {panel === "Roles" && <Roles company={company} currentMember={currentMember} />}
+        {panel === "Invitations" && <Invitations company={company} currentMember={currentMember}/>}
       </div>
     </div>
   )
@@ -91,25 +95,61 @@ function General({ company, currentMember }: SettingsProps) {
       <form onSubmit={(e) => handleSaveChanges(e)}>
         <div className='my-3'>
           <Label htmlFor="name">Name</Label>
-          <Input className='mt-1' value={name} onChange={(e) => setName(e.target.value)} id="name" required />
+          <Input className='mt-1' value={name} onChange={(e) => setName(e.target.value)} id="name" disabled={currentMember.role === "Reader"} required />
         </div>
         <div className='my-3'>
           <Label htmlFor="description">Description</Label>
-          <Textarea className="mt-1" value={description} onChange={(e) => setDescription(e.target.value)} id="description" required />
+          <Textarea className="mt-1" value={description} onChange={(e) => setDescription(e.target.value)} id="description" disabled={currentMember.role === "Reader"} required />
         </div>
         <div className='my-3'>
           <Label htmlFor="location">Location</Label>
-          <Input className='mt-1' value={location} onChange={(e) => setLocation(e.target.value)} id="location" />
+          <Input className='mt-1' value={location} onChange={(e) => setLocation(e.target.value)} id="location" disabled={currentMember.role === "Reader"} />
         </div>
         <div className='my-3'>
           <Label htmlFor="website">Website</Label>
-          <Input className='mt-1' value={website} onChange={(e) => setWebsite(e.target.value)} id="website" required />
+          <Input className='mt-1' value={website} onChange={(e) => setWebsite(e.target.value)} id="website" disabled={currentMember.role === "Reader"} required />
         </div>
 
         <div className="flex justify-end">
-          <Button disabled={loading}>{loading ? "Saving changes..." : "Save changes"}</Button>
+          <Button disabled={loading || currentMember.role === "Reader"}>{loading ? "Saving changes..." : "Save changes"}</Button>
         </div>
       </form>
+
+    </div>
+  )
+}
+
+function Invitations({ currentMember, company }: SettingsProps) {
+  const [invitations, setInvitations] = useState<Invitation[] | null>(null);
+
+  useEffect(() => {
+    getInvitations('company', company.id).then(setInvitations);
+  }, [])
+
+  async function handleDeleteInvitation(id: string) {
+    setInvitations(invitations?.filter(inv => inv.id !== id)!)
+    return await deleteInvitation(id)
+  }
+
+  return (
+    <div>
+      {invitations === null && <p>Loading invitations...</p>}
+      {invitations?.length === 0 && <p>No pending invitations</p>}
+
+      <div className="flex flex-col gap-6">
+        {invitations?.filter(inv => inv.status === "Pending").map(invitation => (
+          <div key={invitation.id}>
+            <div className='flex gap-2 items-center'>
+              <p className='text-zinc-300 text-[15px]'>{invitation.email}</p>
+              <Badge>{invitation.role}</Badge>
+            </div>
+            <p className='text-zinc-200 mt-1'>{invitation.message}</p>
+            <div className="flex gap-2 mt-1">
+              <Button variant="destructive" size="sm" onClick={() => handleDeleteInvitation(invitation.id)} disabled={currentMember.role !== "Admin"}>Delete</Button>
+            </div>
+          </div>
+        ))}
+      </div>
 
     </div>
   )

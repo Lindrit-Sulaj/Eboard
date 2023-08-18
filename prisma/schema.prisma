@@ -125,6 +125,7 @@ model Invitation {
   senderName String
   message String?
   role Role
+  status InvitationStatus @default(Pending)
 
   createdAt DateTime @default(now())
   company Company @relation(fields: [companyId], references: [id])
@@ -172,6 +173,12 @@ enum Status {
   Todo
   In_progress
   Completed
+}
+
+enum InvitationStatus {
+  Accepted
+  Pending
+  Rejected
 }
 
 enum Label {

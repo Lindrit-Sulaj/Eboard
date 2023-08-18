@@ -7,8 +7,8 @@ import { Info, MoreVertical, X, Layout, Hourglass, Users2, Bell, Pin, Mail, Chec
 import Link from 'next/link';
 
 import { getTasks, editTask } from '@/actions/task';
-import { getUserMembers } from '@/actions/member';
-import { getInvitations } from '@/actions/invite';
+import { getUserMembers, createMember } from '@/actions/member';
+import { getInvitations, changeInvitationStatus } from '@/actions/invite';
 
 import { Industry } from '@/ts/data';
 import { Badge } from '@/components/ui/badge';
@@ -73,6 +73,14 @@ export default function DashboardPage() {
     fetchMembers();
     fetchTasks();
   }, [])
+
+  async function handleAcceptInvitation({ invitationId, companyId, role }: { invitationId: string, role: string, companyId: string }) {
+    await changeInvitationStatus(invitationId, 'Accepted');
+    // @ts-ignore
+    await createMember(companyId, user, role)
+
+    return router.push(`/dashboard/${companyId}/`)
+  }
 
   return (
     <main className='px-4'>
@@ -201,21 +209,22 @@ export default function DashboardPage() {
           )}
         </TabsContent>
         <TabsContent value="invitations">
+          {invitations === null && <p>Loading</p>}
           {invitations?.length === 0 && <p>You have no pending invites</p>}
 
           {invitations?.map(invitation => (
             <div key={invitation.id} className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md px-6 py-4 flex justify-between gap-2'>
-              <div>
+              <div className='flex flex-col'>
                 <h3 className='font-semibold'>{invitation.company.name} <span className="text-zinc-400 text-[14px] ml-1">{Industry[invitation.company.industry]}</span></h3>
                 {invitation.message && <p className='text-[15px] text-zinc-300 my-1'>{invitation.message}</p>}
 
-                <p className='mt-3 text-[15px] flex items-center gap-2'>By {invitation.senderName} <Badge>Admin</Badge></p>
+                <div className='mt-auto text-[15px] flex items-center gap-2'>By {invitation.senderName} <Badge>Admin</Badge></div>
               </div>
               <div className='flex flex-col gap-2 items-center'>
                 <Button className='dark:bg-transparent dark:hover:bg-red-500' size="icon">
                   <X className='text-white' />
                 </Button>
-                <Button className='dark:bg-transparent dark:hover:bg-green-500' size="icon">
+                <Button onClick={() => handleAcceptInvitation({ invitationId: invitation.id, role: invitation.role, companyId: invitation.companyId })} className='dark:bg-transparent dark:hover:bg-green-500' size="icon">
                   <Check className='text-white' />
                 </Button>
               </div>
