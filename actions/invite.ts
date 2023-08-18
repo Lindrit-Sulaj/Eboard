@@ -35,6 +35,9 @@ export async function getInvitations(by: 'user' | 'company', val: string) {
     where: {
       companyId: val
     },
+    include: {
+      company: true
+    },
     orderBy: {
       createdAt: 'asc'
     }

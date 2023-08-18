@@ -61,6 +61,15 @@ export async function updateUser(data : { name?: string, password?: string }) {
     updatedData.hashedPassword = hashedPassword;
   }
 
+  await prisma.member.updateMany({
+    where: {
+      email: session?.user?.email!
+    },
+    data: {
+      name: updatedData.name
+    }
+  })
+
   return await prisma.user.update({
     where: {
       email: session?.user?.email!
