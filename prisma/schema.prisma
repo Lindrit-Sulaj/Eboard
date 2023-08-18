@@ -79,8 +79,9 @@ model Project {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   description String?
-  assignedUsers String[]
+  managerId String? @db.ObjectId
 
+  manager Member? @relation(fields: [managerId], references: [id])
   tasks Task[]
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
@@ -98,6 +99,7 @@ model Member {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  projects Project[]
   company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

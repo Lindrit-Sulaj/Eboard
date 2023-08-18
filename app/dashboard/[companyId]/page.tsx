@@ -4,12 +4,14 @@ import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+
 import Menu from '@/components/dashboard/Menu'
 import { Industry } from '@/ts/data'
 import { getCompany } from '@/actions/company'
 import { getMember } from '@/actions/member'
 import { Separator } from '@/components/ui/separator'
 import Settings from '@/components/dashboard/Settings'
+import CreateProject from '@/components/dashboard/CreateProject'
 
 export default async function CompanyPage({ params, searchParams }: { params: { [key: string]: string }, searchParams: { [key: string]: string } }) {
   const member = await getMember(params.companyId)
@@ -51,9 +53,7 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
           <section className='py-12 max-w-screen-xl mx-auto'>
             <div className='flex justify-between items-center'>
               <h2 className='font-semibold text-xl'>Projects</h2>
-              <Link href={`/dashboard/${params.companyId}/new-project`}>
-                <Button>New project</Button>
-              </Link>
+              <CreateProject />
             </div>
             {company.projects.length > 0 ? (
               <div className="grid grid-cols-3 mt-2">
@@ -68,7 +68,7 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
 
                     <div className='flex justify-end gap-2 mt-2'>
                       <Button variant={"outline"} size="sm">
-                        {project.assignedUsers.includes(member.userId) ? "Assigned" : "Not assigned"}
+                        Not assigned
                       </Button>
                       <Link href={`/dashboard/${params.companyId}/${project.title}/`}>
                         <Button size="sm">
