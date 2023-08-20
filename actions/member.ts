@@ -9,7 +9,7 @@ export async function getMember(companyId: string) {
 
   if (!user) return null;
 
-  return user.members.filter(member => member.companyId === companyId)[0]
+  return user.members.find(member => member.companyId === companyId)
 }
 
 export async function createMember(companyId: string, user: User, role: "Reader" | "Editor" | "Admin", otherMembers?: any) {

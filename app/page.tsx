@@ -74,13 +74,7 @@ export default function DashboardPage() {
     fetchTasks();
   }, [])
 
-  async function handleAcceptInvitation({ invitationId, companyId, role }: { invitationId: string, role: string, companyId: string }) {
-    await changeInvitationStatus(invitationId, 'Accepted');
-    // @ts-ignore
-    await createMember(companyId, user, role)
 
-    return router.push(`/dashboard/${companyId}/`)
-  }
 
   return (
     <main className='px-4'>
@@ -212,25 +206,11 @@ export default function DashboardPage() {
           {invitations === null && <p>Loading</p>}
           {invitations?.length === 0 && <p>You have no pending invites</p>}
 
-          {invitations?.map(invitation => (
-            <div key={invitation.id} className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md px-6 py-4 flex justify-between gap-2'>
-              <div className='flex flex-col'>
-                <h3 className='font-semibold'>{invitation.company.name} <span className="text-zinc-400 text-[14px] ml-1">{Industry[invitation.company.industry]}</span></h3>
-                {invitation.message && <p className='text-[15px] text-zinc-300 my-1'>{invitation.message}</p>}
-
-                <div className='mt-auto text-[15px] flex items-center gap-2'>By {invitation.senderName} <Badge>Admin</Badge></div>
-              </div>
-              <div className='flex flex-col gap-2 items-center'>
-                <Button className='dark:bg-transparent dark:hover:bg-red-500' size="icon">
-                  <X className='text-white' />
-                </Button>
-                <Button onClick={() => handleAcceptInvitation({ invitationId: invitation.id, role: invitation.role, companyId: invitation.companyId })} className='dark:bg-transparent dark:hover:bg-green-500' size="icon">
-                  <Check className='text-white' />
-                </Button>
-              </div>
-
-            </div>
-          ))}
+          {invitations?.map(invitation => {
+            if (invitation.status === "Pending") {
+              return <InvitationComponent key={invitation.id} user={user} invitation={invitation} />
+            }
+          })}
         </TabsContent>
         <TabsContent value="settings">
           <UserSettings />
@@ -298,5 +278,53 @@ function Task({ task }: { task: Task }) {
       </div>
       <Separator className='dark:bg-zinc-900' />
     </>
+  )
+}
+
+function InvitationComponent({ invitation, user }: { invitation: InvitationInterface, user: any }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [reject, setReject] = useState(false);
+  const [accept, setAccept] = useState(false);
+
+  async function handleAcceptInvitation({ invitationId, companyId, role }: { invitationId: string, role: string, companyId: string }) {
+    if (accept) return;
+    
+    setLoading(true);
+    setAccept(true);
+
+    await changeInvitationStatus(invitationId, 'Accepted');
+    // @ts-ignore
+    return await createMember(companyId, user, role).then(() => router.push(`/dashboard/${companyId}/`)).finally(setLoading(false));
+  }
+
+  async function handleRejectInvitation() {
+    setLoading(true);
+
+    return await changeInvitationStatus(invitation.id, 'Rejected').finally(() => {
+      setLoading(false);
+      setReject(true);
+    })
+  }
+
+  if (reject) return;
+
+  return (
+    <div key={invitation.id} className={`bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md px-6 py-4 my-2 flex justify-between gap-2 ${loading || accept ? 'opacity-70 pointer-events-none' : ''}`}>
+      <div className='flex flex-col'>
+        <h3 className='font-semibold'>{invitation.company.name} <span className="text-zinc-400 text-[14px] ml-1">{Industry[invitation.company.industry]}</span></h3>
+        {invitation.message && <p className='text-[15px] text-zinc-300 my-1'>{invitation.message}</p>}
+
+        <div className='mt-auto text-[15px] flex items-center gap-2'>By {invitation.senderName} <Badge>Admin</Badge></div>
+      </div>
+      <div className='flex flex-col gap-2 items-center'>
+        <Button onClick={handleRejectInvitation} className='dark:bg-transparent dark:hover:bg-red-500' size="icon">
+          <X className='text-white' />
+        </Button>
+        <Button onClick={() => handleAcceptInvitation({ invitationId: invitation.id, role: invitation.role, companyId: invitation.companyId })} className='dark:bg-transparent dark:hover:bg-green-500' size="icon">
+          <Check className='text-white' />
+        </Button>
+      </div>
+    </div>
   )
 }

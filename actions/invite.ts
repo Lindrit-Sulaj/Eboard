@@ -27,7 +27,7 @@ export async function getInvitations(by: 'user' | 'company', val: string) {
       include: {
         company: true
       },
-      orderBy: { createdAt: 'asc' }
+      orderBy: { createdAt: 'desc' }
     })
   }
   
