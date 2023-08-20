@@ -231,10 +231,6 @@ export default function DashboardPage() {
 
             </div>
           ))}
-
-          <pre>
-            {JSON.stringify(invitations, null, 2)}
-          </pre>
         </TabsContent>
         <TabsContent value="settings">
           <UserSettings />

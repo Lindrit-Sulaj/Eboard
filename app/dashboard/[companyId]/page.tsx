@@ -53,22 +53,22 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
           <section className='py-12 max-w-screen-xl mx-auto'>
             <div className='flex justify-between items-center'>
               <h2 className='font-semibold text-xl'>Projects</h2>
-              <CreateProject />
+              <CreateProject companyId={company.id} members={company.members} />
             </div>
             {company.projects.length > 0 ? (
-              <div className="grid grid-cols-3 mt-2">
+              <div className="grid grid-cols-3 mt-2 gap-4">
                 {company.projects.map(project => (
-                  <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md p-7 hover:border-zinc-600 cursor-pointer transition-all' key={project.id}>
+                  <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md p-7 hover:border-zinc-600 cursor-pointer flex flex-col transition-all' key={project.id}>
 
                     <h3 className='font-semibold text-[17px] flex items-center gap-2'>
                       {project.title}
                       <Badge>{project.priority} Priority</Badge>
                     </h3>
-                    <p className='text-[15px] text-zinc-400 mt-1'>{project.description}</p>
+                    <p className='text-[15px] text-zinc-400 mt-1 mb-2'>{project.description}</p>
 
-                    <div className='flex justify-end gap-2 mt-2'>
+                    <div className='flex justify-end gap-2 mt-auto'>
                       <Button variant={"outline"} size="sm">
-                        Not assigned
+                        { project.managerId === member.id ? "Assigned" : "Not assigned" }
                       </Button>
                       <Link href={`/dashboard/${params.companyId}/${project.title}/`}>
                         <Button size="sm">
@@ -81,7 +81,7 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
               </div>
             ) : (
               <div className='text-[15px] text-center text-zinc-400 mt-6'>
-                No projects yet. <Link className='text-zinc-200' href={`/dashboard/${params.companyId}/new-project`}>Create one</Link>
+                No projects yet.
               </div>
             )}
 
