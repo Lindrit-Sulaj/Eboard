@@ -58,13 +58,13 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
             {company.projects.length > 0 ? (
               <div className="grid grid-cols-3 mt-2 gap-4">
                 {company.projects.map(project => (
-                  <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md p-7 hover:border-zinc-600 cursor-pointer flex flex-col transition-all' key={project.id}>
+                  <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md p-7 hover:border-zinc-600 cursor-pointer flex flex-col h-[160px] transition-all' key={project.id}>
 
                     <h3 className='font-semibold text-[17px] flex items-center gap-2'>
                       {project.title}
                       <Badge>{project.priority} Priority</Badge>
                     </h3>
-                    <p className='text-[15px] text-zinc-400 mt-1 mb-2'>{project.description}</p>
+                    <p className={`text-[15px] mt-1 mb-2 ${project.description ? 'text-zinc-400' : 'text-zinc-500 italic'}`}>{!project.description ? `No description available.` : project.description.length <= 82 ? project.description : `${project.description.slice(0, 82)}...`}</p>
 
                     <div className='flex justify-end gap-2 mt-auto'>
                       <Button variant={"outline"} size="sm">
