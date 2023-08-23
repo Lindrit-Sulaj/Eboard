@@ -28,11 +28,14 @@ export async function createProject({ companyId, title, priority, managerId, des
 export async function getProject({ companyId, projectName }: { companyId: string, projectName: string }) {
   return await prisma.project.findFirst({
     where: {
-      companyId,
-      title: projectName
+      AND: [
+        { title: projectName },
+        { companyId }
+      ]
     },
     include: {
-      tasks: true
+      tasks: true,
+      manager: true
     }
   })
 }
