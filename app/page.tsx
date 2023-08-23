@@ -179,6 +179,23 @@ export default function DashboardPage() {
               <Button className='whitespace-nowrap'> Add new <Plus className='ml-1 hidden md:block' size={16} /></Button>
             </Link>
           </div>
+          {members === null && (
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+              {[1, 2, 3, 4, 5, 6].map(skel => (
+                <div key={skel} className='p-4 bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md'>
+                  <Skeleton className='w-1/3 h-3'></Skeleton>
+                  <Skeleton className='w-1/2 h-[10px] mt-1'></Skeleton>
+                  <Skeleton className='h-5 w-3/4 mt-5'></Skeleton>
+                  <Skeleton className='w-[50px] h-[18px] mt-1 rounded-full'></Skeleton>
+                </div>
+              ))}
+            </div>
+          )}
+          {members.length === 0 && (
+            <div className='bg-zinc-950 p-4 border-solid border-[1px] border-zinc-800 rounded-md'>
+              <p className='text-sm text-center text-zinc-300 text-[15px]'>You haven't joined any companies.</p>
+            </div>
+          )}
           {members && (
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
               {members.filter((m: any) => m.company.name.toLowerCase().includes(searchCompanies.toLowerCase())).map((member: any) => (
@@ -203,7 +220,22 @@ export default function DashboardPage() {
           )}
         </TabsContent>
         <TabsContent value="invitations">
-          {invitations === null && <p>Loading</p>}
+          {invitations === null && (
+            [1, 2, 3, 4, 5, 6].map(skel => (
+              <div key={skel} className='py-4 px-6 bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md my-2 flex justify-between gap-2'>
+                <div className='grow'>
+                  <Skeleton className='w-[140px] h-3'></Skeleton>
+                  <Skeleton className='w-[80%] lg:w-1/3 h-5 mt-1'></Skeleton>
+
+                  <Skeleton className='mt-5 w-[100px] h-3'></Skeleton>
+                </div>
+                <div className="flex flex-col gap-y-2 justify-around">
+                  <Skeleton className='w-7 h-7'></Skeleton>
+                  <Skeleton className='w-7 h-7'></Skeleton>
+                </div>
+              </div>
+            ))
+          )}
           {invitations?.length === 0 && <p>You have no pending invites</p>}
 
           {invitations?.map(invitation => {
@@ -289,7 +321,7 @@ function InvitationComponent({ invitation, user }: { invitation: InvitationInter
 
   async function handleAcceptInvitation({ invitationId, companyId, role }: { invitationId: string, role: string, companyId: string }) {
     if (accept) return;
-    
+
     setLoading(true);
     setAccept(true);
 

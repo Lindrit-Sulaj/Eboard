@@ -114,7 +114,6 @@ model Task {
 
   description String?
   priority Priority @default(Medium)
-  dueDate DateTime?
   label Label?
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -186,7 +185,7 @@ enum InvitationStatus {
 enum Label {
   Urgent
   Important
-  Bub
+  Bug
   Feature
   Request
   Documentation

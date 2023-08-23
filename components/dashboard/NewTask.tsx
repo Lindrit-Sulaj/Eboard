@@ -48,7 +48,7 @@ export default function NewTask({ project }: { project: Project }) {
           </div>
           <div className="my-2">
             <Label htmlFor="assignee">Assign member</Label>
-            <Select>
+            <Select disabled={true}>
               <SelectTrigger id="assignee" className='mt-1'>
                 <SelectValue placeholder='None' />
               </SelectTrigger>
