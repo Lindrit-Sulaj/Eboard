@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Project, Status, Task } from '@prisma/client'
 
-import { deleteTask } from '@/actions/task'
+import { deleteTask, editTask } from '@/actions/task'
 import TaskColumn from './TaskColumn'
 
 const taskStatus: { val: string, label: string }[] = [
@@ -32,10 +32,14 @@ export default function Tasks(props: { project: Project, tasks: Task[] }) {
 
         deleteTask(action.payload.id)
       }
+      break;
       case 'Complete': {
         const newTasks = tasks?.map(task => task.id === action.payload.id ? { ...task, status: "Completed" as Status } : task)!;
         setTasks(newTasks)
+
+        editTask(action.payload.id, { status: 'Completed' })
       }
+      break;
     }
   }
 

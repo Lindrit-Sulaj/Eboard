@@ -1,12 +1,12 @@
 "use server"
+import { Label, Priority } from "@prisma/client"
 import prisma from "@/lib/prisma"
 import { getUser } from "./user"
 
-export async function createTask() {
+export async function createTask(data: { title: string, projectId: string, priority: Priority, label: Label | null, description: string | null}) {
   return await prisma.task.create({
     data: {
-      title: 'My first task',
-      projectId: '64c196707301a909b3655cef',
+      ...data
     }
   })
 }

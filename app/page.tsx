@@ -74,7 +74,13 @@ export default function DashboardPage() {
     fetchTasks();
   }, [])
 
-
+  if  (session.status === "unauthenticated") {
+    return (
+      <div>
+        Log in
+      </div>
+    )
+  }
 
   return (
     <main className='px-4'>
@@ -191,7 +197,7 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
-          {members.length === 0 && (
+          {members?.length === 0 && (
             <div className='bg-zinc-950 p-4 border-solid border-[1px] border-zinc-800 rounded-md'>
               <p className='text-sm text-center text-zinc-300 text-[15px]'>You haven't joined any companies.</p>
             </div>

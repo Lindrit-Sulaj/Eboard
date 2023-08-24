@@ -1,12 +1,13 @@
 "use client"
-import React from 'react'
-import { Project } from '@prisma/client'
+import React, { useState } from 'react'
+import { Label as LabelPrisma, Priority, Project } from '@prisma/client'
 
+import { createTask } from '@/actions/task'
 import { Textarea } from '../ui/textarea'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { Button } from '../ui/button'
-import { 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -15,15 +16,37 @@ import {
   DialogFooter,
   DialogTrigger
 } from '../ui/dialog'
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue
 } from '../ui/select'
+import { useToast } from '../ui/use-toast'
+
+
 
 export default function NewTask({ project }: { project: Project }) {
+  const { toast } = useToast();
+
+  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("Medium")
+  const [label, setLabel] = useState('');
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+
+    setLoading(true);
+
+    return await createTask({ title, description: description || null, projectId: project.id, priority: priority as Priority, label: label ? label as LabelPrisma : null })
+      .then(() => toast({ title: 'Task has been added', description: 'Refresh the page to view the new tasks list.' }))
+      .catch(e => toast({ title: 'Something went wrong', description: 'The server returned an error: ' + e.message}))
+      .finally(() => setLoading(false))
+  }
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -37,45 +60,49 @@ export default function NewTask({ project }: { project: Project }) {
           <DialogDescription>Press save when you're done.</DialogDescription>
         </DialogHeader>
 
-        <form>
+        <form onSubmit={handleSave}>
           <div className="my-2">
             <Label htmlFor='title'>Title</Label>
-            <Input id="title" placeholder='E.g. Finish exterior of main building' className='mt-1' />
+            <Input id="title" placeholder='E.g. Finish exterior of main building' className='mt-1' value={title} onChange={(e) => setTitle(e.target.value)} required />
           </div>
           <div className="my-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" placeholder='Complete the exterior finishing of the main building according to design and quality standards... ' className='mt-1' />
-          </div>
-          <div className="my-2">
-            <Label htmlFor="assignee">Assign member</Label>
-            <Select disabled={true}>
-              <SelectTrigger id="assignee" className='mt-1'>
-                <SelectValue placeholder='None' />
+            <Label htmlFor="priority">Priority</Label>
+            <Select value={priority} onValueChange={setPriority}>
+              <SelectTrigger id="priority" className='mt-1'>
+                <SelectValue placeholder='Medium' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Dave">Dave</SelectItem>
-                <SelectItem value="John">John</SelectItem>
-                <SelectItem value="Jane">Jane</SelectItem>
+                <SelectItem value="Low">Low</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="High">High</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="my-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea id="description" placeholder='Complete the exterior finishing of the main building according to design and quality standards... ' className='mt-1' value={description} onChange={(e) => setDescription(e.target.value)} />
+          </div>
+          <div className="my-2">
             <Label htmlFor="label">Label</Label>
-            <Select>
+            <Select value={label} onValueChange={setLabel}>
               <SelectTrigger id="label" className='mt-1'>
-                <SelectValue placeholder='Choose label' />
+                <SelectValue aria-label={label}>
+                  { label || "Choose label"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="feature">Feature</SelectItem>
-                <SelectItem value="request">Request</SelectItem>
-                <SelectItem value="documentation">Documentation</SelectItem>
+                <SelectItem value="Feature">Feature</SelectItem>
+                <SelectItem value="Request">Request</SelectItem>
+                <SelectItem value="Documentation">Documentation</SelectItem>
+                <SelectItem value="Urgent">Urgent</SelectItem>
+                <SelectItem value="Bug">Bug</SelectItem>
+                <SelectItem value="Important">Important</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <DialogFooter>
-            <Button variant="outline">Cancel</Button>
-            <Button>Save</Button>
+            <Button type="submit" disabled={loading}>{loading ? "Saving" : "Save"}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
