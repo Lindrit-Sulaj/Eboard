@@ -39,3 +39,22 @@ export async function getProject({ companyId, projectName }: { companyId: string
     }
   })
 }
+
+export async function deleteProject({ projectId }: { projectId: string }) {
+  return await prisma.project.delete({
+    where: {
+      id: projectId
+    }
+  })
+}
+
+export async function editProject({ projectId, data }: { projectId: string, data: { title: string, description: string, priority: Priority }}) {
+  return prisma.project.update({
+    where: {
+      id: projectId
+    },
+    data: {
+      ...data
+    }
+  })
+}

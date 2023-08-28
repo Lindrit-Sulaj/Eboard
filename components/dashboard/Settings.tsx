@@ -1,11 +1,13 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { Company, Invitation, Member } from '@prisma/client'
+import { Company, Invitation, Member, Priority, Project } from '@prisma/client'
 import { MoreVertical } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { editCompany } from '@/actions/company';
 import { getInvitations, deleteInvitation } from '@/actions/invite';
+import { deleteProject, editProject } from '@/actions/project';
 
 import CompanyMember from './CompanyMember';
 import { Badge } from '../ui/badge';
@@ -14,9 +16,12 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Button } from '../ui/button';
 import { useToast } from '../ui/use-toast';
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogDescription, DialogFooter, DialogTitle } from '../ui/dialog';
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface SettingsProps {
-  company: Company & { members: Member[] };
+  company: Company & { members: Member[], projects: Project[] };
   currentMember: Member;
 }
 
@@ -37,7 +42,8 @@ export default function Settings({ company, currentMember }: SettingsProps) {
       <div className='px-6 py-8 w-5/6'>
         {panel === "General" && <General company={company} currentMember={currentMember} />}
         {panel === "Roles" && <Roles company={company} currentMember={currentMember} />}
-        {panel === "Invitations" && <Invitations company={company} currentMember={currentMember}/>}
+        {panel === "Invitations" && <Invitations company={company} currentMember={currentMember} />}
+        {panel === "Projects" && <Projects company={company} currentMember={currentMember} />}
       </div>
     </div>
   )
@@ -151,6 +157,102 @@ function Invitations({ currentMember, company }: SettingsProps) {
         ))}
       </div>
 
+    </div>
+  )
+}
+
+function Projects({ currentMember, company }: SettingsProps) {
+  if (currentMember.role !== "Admin") {
+    return (
+      <div>
+        You don't have access to this settings page :)
+      </div>
+    )
+  }
+
+  if (company?.projects.length === 0) {
+    return (
+      <div>
+        No projects yet.
+      </div>
+    )
+  }
+
+  return (
+    <div className='flex flex-col gap-y-4'>
+      {company.projects.map(project => (
+        <Project project={project} key={project.id}/>
+      ))}
+    </div>
+  )
+}
+
+function Project({ project }: { project: Project }) {
+  const router = useRouter();
+
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const [title, setTitle] = useState(project.title);
+  const [description, setDescription] = useState<string>(project.description || "");
+  const [priority, setPriority] = useState(project.priority)
+  
+  async function handleSave() {
+    setSaving(true);
+
+    return await editProject({ projectId: project.id, data: { title, description, priority }}).then((p) => router.push(`/dashboard/${project.companyId}/${p.title}`)).finally(() => setSaving(false));
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+
+    return await deleteProject({ projectId: project.id }).finally(() => router.push(`/dashboard/${project.companyId}`))
+  }
+
+  return (
+    <div className={`bg-zinc-925 p-4 rounded-md border-solid border-zinc-800 border-[1px] ${deleting && "pointer-events-none opacity-70"}`}>
+      <h5 className='font-semibold'>{project.title} {project.managerId && <Badge>Has manager</Badge>}</h5>
+      <p className={`text-[15px] text-zinc-400 ${project.managerId && "mt-1"}`}>{project.description}</p>
+      <div className="flex justify-end gap-1">
+        <Button variant="destructive" disabled={deleting} onClick={handleDelete}>Delete</Button>
+        <Dialog>
+          <DialogTrigger className='border border-zinc-200 bg-white hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 h-10 px-4 py-2 inline-flex items-center justify-center rounded-md text-sm font-medium'>
+            Edit
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit project</DialogTitle>
+              <DialogDescription>Press save when you're done.</DialogDescription>
+            </DialogHeader>
+            <div>
+              <Label htmlFor="title">Title:</Label>
+              <Input id="title" className='mt-1' placeholder='Project name' value={title} onChange={(e) => setTitle(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor="description">Description:</Label>
+              <Textarea id="description" className='mt-1' value={description} onChange={(e) => setDescription(e.target.value)} />
+            </div>
+            <div>
+              <Label htmlFor='priority'>Priority</Label>
+              <Select value={priority} onValueChange={v => setPriority(v as Priority)}>
+                <SelectTrigger>
+                  <SelectValue aria-label={priority}>
+                    {priority}
+                  </SelectValue>
+                  <SelectContent>
+                    <SelectItem value="Low">Low</SelectItem>
+                    <SelectItem value="Medium">Medium</SelectItem>
+                    <SelectItem value='High'>High</SelectItem>
+                  </SelectContent>
+                </SelectTrigger>
+              </Select>
+            </div>
+            <DialogFooter>
+              <Button onClick={handleSave} disabled={saving || deleting}>{saving ? "Saving..." : 'Save'}</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }

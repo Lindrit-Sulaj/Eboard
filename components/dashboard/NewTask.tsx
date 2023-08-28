@@ -24,10 +24,14 @@ import {
   SelectValue
 } from '../ui/select'
 import { useToast } from '../ui/use-toast'
+import { useAuth } from '@/app/AuthProvider'
 
 
 
 export default function NewTask({ project }: { project: Project }) {
+  const user = useAuth();
+
+  const member = user?.members.find(m => m.companyId === project.companyId)
   const { toast } = useToast();
 
   const [loading, setLoading] = useState(false);
@@ -49,10 +53,8 @@ export default function NewTask({ project }: { project: Project }) {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <Button className='rounded-l-none'>
-          New Task
-        </Button>
+      <DialogTrigger className={`h-10 px-4 py-2 dark:bg-zinc-50 dark:text-zinc-900 text-sm rounded-r-md ${member?.role === "Reader" && 'dark:bg-zinc-50/70'}`} disabled={member?.role === "Reader"}>
+        New Task
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

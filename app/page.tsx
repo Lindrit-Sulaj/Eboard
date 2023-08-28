@@ -6,7 +6,7 @@ import { type Task, type Member, type Company, Invitation } from '@prisma/client
 import { Info, MoreVertical, X, Layout, Hourglass, Users2, Bell, Pin, Mail, CheckCircle2, Link as LucideLink, Plus, Check } from 'lucide-react';
 import Link from 'next/link';
 
-import { getTasks, editTask } from '@/actions/task';
+import { getTasks, editTask, deleteTask } from '@/actions/task';
 import { getUserMembers, createMember } from '@/actions/member';
 import { getInvitations, changeInvitationStatus } from '@/actions/invite';
 
@@ -259,6 +259,7 @@ export default function DashboardPage() {
 }
 
 function Task({ task }: { task: Task }) {
+  const router = useRouter();
   const [status, setStatus] = useState<string>(task.status)
 
   useEffect(() => {
@@ -291,8 +292,6 @@ function Task({ task }: { task: Task }) {
             <DropdownMenuContent>
               <DropdownMenuLabel>Task Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className='w-36'><Users2 className='w-4 h-4 mr-2' /> Company </DropdownMenuItem>
-              <DropdownMenuItem className='w-36'><Layout className='w-4 h-4 mr-2' /> View </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
                   <Hourglass className='h-4 w-4 mr-2' /> Mark as
@@ -308,7 +307,7 @@ function Task({ task }: { task: Task }) {
                 </DropdownMenuPortal>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className='w-36'><X className='w-4 h-4 mr-2' />Delete</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => deleteTask(task.id)} className='w-36'><X className='w-4 h-4 mr-2' />Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

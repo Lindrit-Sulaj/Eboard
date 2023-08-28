@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-import { Project, Status, Task } from '@prisma/client'
+import { Priority, Project, Status, Task } from '@prisma/client'
 
 import { deleteTask, editTask } from '@/actions/task'
 import TaskColumn from './TaskColumn'
@@ -38,6 +38,13 @@ export default function Tasks(props: { project: Project, tasks: Task[] }) {
         setTasks(newTasks)
 
         editTask(action.payload.id, { status: 'Completed' })
+      }
+      break;
+      case "Edit": {
+        const newTasks = tasks?.map(task => task.id === action.payload.id ? { ...task, status: action.payload.status as Status, priority: action.payload.priority as Priority, assigneeId: action.payload.assigneeId } : task)!;
+        setTasks(newTasks);
+
+        editTask(action.payload.id, { status: action.payload.status as Status, priority: action.payload.priority as Priority, assigneeId: action.payload.assigneeId })
       }
       break;
     }
