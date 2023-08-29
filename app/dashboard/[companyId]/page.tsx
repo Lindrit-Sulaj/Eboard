@@ -38,27 +38,27 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
       <Menu />
       {(searchParams.tab === "" || !searchParams.hasOwnProperty("tab")) ? (
         <div>
-          <div className='bg-zinc-950 border-solid border-b-[1px] border-zinc-800 py-10 px-4'>
+          <div className='bg-zinc-950 border-solid border-b-[1px] border-zinc-800 py-6 md:py-10 px-4'>
             <div className='max-w-screen-xl mx-auto'>
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center text-sm md:text-base">
                 <p className='text-zinc-400'>{Industry[company?.industry!]}</p>
                 {company.location && <p className='flex items-center gap-1 text-sm'><MapPin size={16} /> {company.location}</p>}
               </div>
-              <h1 className='font-bold text-3xl mt-2'>{company?.name}</h1>
+              <h1 className='font-bold text-xl md:text-3xl mt-2'>{company?.name}</h1>
               <p className='text-zinc-200 text-[15px] mt-1 max-w-xl'>{company?.description}</p>
               <a className='mt-2 block underline underline-offset-1' href={company.website!}>{company.website}</a>
             </div>
 
           </div>
-          <section className='py-12 max-w-screen-xl mx-auto'>
+          <section className='py-4 md:py-12 max-w-screen-xl mx-auto px-4 md:px-0'>
             <div className='flex justify-between items-center'>
               <h2 className='font-semibold text-xl'>Projects</h2>
               <CreateProject companyId={company.id} members={company.members} />
             </div>
             {company.projects.length > 0 ? (
-              <div className="grid grid-cols-3 mt-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-2 gap-4">
                 {company.projects.map(project => (
-                  <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md p-7 hover:border-zinc-600 cursor-pointer flex flex-col h-[160px] transition-all' key={project.id}>
+                  <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md p-7 hover:border-zinc-600 cursor-pointer flex flex-col md:h-[160px] transition-all' key={project.id}>
 
                     <h3 className='font-semibold text-[17px] flex items-center gap-2'>
                       {project.title}
@@ -89,7 +89,7 @@ export default async function CompanyPage({ params, searchParams }: { params: { 
           </section>
         </div>
       ) : searchParams.tab === "members" ? (
-        <div className="max-w-screen-xl mx-auto my-10 bg-zinc-950 rounded-md border-solid border-[1px] p-6 border-zinc-800">
+        <div className="w-[95%] md:w-full max-w-screen-xl mx-auto my-5 md:my-10 bg-zinc-950 rounded-md border-solid border-[1px] p-6 border-zinc-800">
           <div className='flex justify-between items-center'>
             <h2 className='font-semibold text-xl'>Members</h2>
             <Link href={member.role === "Admin" ? `/dashboard/${params.companyId}/invite` : ''}>

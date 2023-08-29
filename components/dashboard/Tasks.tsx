@@ -51,7 +51,7 @@ export default function Tasks(props: { project: Project, tasks: Task[] }) {
   }
 
   return (
-    <div className='grid grid-cols-3 max-w-screen-xl mx-auto my-6 gap-6'>
+    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-screen-xl mx-auto my-6 gap-6 px-4 md:px-0'>
       { taskStatus.map(t => (
         <TaskColumn key={t.val} tasks={tasks?.filter(task => task.status === t.val)!} label={t.label} dispatch={tasksDispatch} />
       )) }

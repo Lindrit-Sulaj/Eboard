@@ -141,31 +141,10 @@ export default function Navbar() {
           <Link href="/company/new">
             <Button className='hidden lg:block'>New Company</Button>
           </Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              {hasImage ? <img className='w-8 h-8 rounded-full' src={user.image!} /> : <p className='px-2 py-1 rounded-md bg-zinc-800'>{user.name}</p>}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>My account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className='pr-8'>
-                <Settings className='w-4 h-4 mr-2' />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className='pr-8'>
-                <Users2 className='w-4 h-4 mr-2' />
-                <span>Companies</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className='pr-8'>
-                <CheckSquare className='w-4 h-4 mr-2' />
-                <span>Tasks</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className='pr-8' disabled>
-                <Gem className='w-4 h-4 mr-2' />
-                <span>Upgrade</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link href="/">
+            {hasImage ? <img className='w-8 h-8 rounded-full' src={user.image!} /> : <p className='px-2 py-1 rounded-md bg-zinc-800'>{user.name}</p>}
+          </Link>
+
           <AlertDialog>
             <AlertDialogTrigger className='px-2'>
               <LogOut className='w-5 h-5' />

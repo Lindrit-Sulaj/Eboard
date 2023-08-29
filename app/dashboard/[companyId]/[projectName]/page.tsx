@@ -23,7 +23,7 @@ export default async function ProjectPage({ params }: { params: { companyId: str
   return (
     <main>
       <div className='bg-zinc-950 border-solid border-y-[1px] border-y-zinc-800 py-6'>
-        <div className="max-w-screen-xl mx-auto flex items-center justify-between">
+        <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 md:px-0">
           <div>
             <h1 className='font-semibold text-2xl'>{project.title}</h1>
             <p className='text-[15px] text-zinc-400'>{tasks} {tasks === 1 ? "task" : "tasks"}</p>

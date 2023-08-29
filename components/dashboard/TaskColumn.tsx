@@ -101,7 +101,7 @@ export function Task({ task, dispatch }: { task: TaskInterface, dispatch: any })
 
               <div className="flex gap-1 justify-end">
                 <Button variant="destructive" onClick={() => dispatch({ type: 'Delete', payload: { id: task.id } })}>Delete</Button>
-                <Button variant="secondary" onClick={handleSave}>Save & exit</Button>
+                <Button variant="secondary" onClick={handleSave}>Save</Button>
               </div>
 
             </DialogContent>

@@ -92,19 +92,19 @@ export default function DashboardPage() {
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
-          <div className="flex justify-between items-center bg-neutral-950 border-zinc-800 border-solid border-[1px] rounded-md p-6">
+          <div className="flex justify-between items-center bg-neutral-950 border-zinc-800 border-solid border-[1px] rounded-md p-3 md:p-6">
             <div className="flex gap-4 items-center">
-              {user?.image && <img className='w-12 h-12 rounded-full' src={user?.image} alt={user?.name!} />}
+              {user?.image && <img className='w-8 h-8 md:w-12 md:h-12 rounded-full' src={user?.image} alt={user?.name!} />}
               <div>
-                <h2 className="text-2xl md:text-3xl font-semibold leading-none tracking-tight">{user?.name}</h2>
+                <h2 className="text-xl md:text-3xl font-semibold leading-none tracking-tight">{user?.name}</h2>
                 <p className="text-sm text-zinc-400 mt-1">{user?.email}</p>
               </div>
             </div>
 
             <Button onClick={() => signOut()}>Log out</Button>
           </div>
-          <div className="flex items-start gap-4 mt-4 h-full">
-            <div className="w-2/3 bg-zinc-950 border-solid border-[1px] rounded-md border-zinc-800 h-full">
+          <div className="flex items-start gap-4 mt-4 h-full flex-col md:flex-row">
+            <div className="w-full md:w-2/3 bg-zinc-950 border-solid border-[1px] rounded-md border-zinc-800 h-full">
               {!tasks && [1, 2, 3, 4, 5, 6, 7].map((elem, index) => (
                 <div key={index}>
                   <div className='p-4 flex items-center justify-between'>
@@ -130,9 +130,9 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className="w-1/3">
+            <div className="w-full md:w-1/3">
               <div className='bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md'>
-                <h3 className='font-semibold text-xl flex items-center px-4 pt-4 pb-3'>
+                <h3 className='font-semibold md:text-xl flex items-center px-4 pt-4 pb-3'>
                   <Bell size={20} className='mr-2' />
                   Notifications
                   <Badge className='dark:bg-blue-500 ml-2'>Coming soon</Badge>

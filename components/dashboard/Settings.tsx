@@ -31,21 +31,26 @@ export default function Settings({ company, currentMember }: SettingsProps) {
   const [panel, setPanel] = useState<"General" | "Roles" | "Invitations" | "Projects">("General")
 
   return (
-    <div className='flex max-w-screen-xl mx-auto bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md my-10'>
-      <div className='w-1/6 py-6 border-solid border-r-[1px] border-r-zinc-900'>
-        {allPanels.map(settingsPanel => (
-          <Button onClick={() => setPanel(settingsPanel)} className={`rounded-none w-full ${settingsPanel === panel ? "text-white border-solid border-l-[2px] border-l-orange-400" : "text-zinc-400"}`} variant="ghost" key={settingsPanel}>
-            {settingsPanel}
-          </Button>
-        ))}
+    <>
+      <div className="md:hidden p-4">
+        <p className='text-center text-[15px] text-zinc-300'>Please visit this page on a larger device.</p>
       </div>
-      <div className='px-6 py-8 w-5/6'>
-        {panel === "General" && <General company={company} currentMember={currentMember} />}
-        {panel === "Roles" && <Roles company={company} currentMember={currentMember} />}
-        {panel === "Invitations" && <Invitations company={company} currentMember={currentMember} />}
-        {panel === "Projects" && <Projects company={company} currentMember={currentMember} />}
+      <div className='hidden md:flex max-w-screen-xl mx-auto bg-zinc-950 border-solid border-[1px] border-zinc-800 rounded-md my-10'>
+        <div className='w-1/6 py-6 border-solid border-r-[1px] border-r-zinc-900'>
+          {allPanels.map(settingsPanel => (
+            <Button onClick={() => setPanel(settingsPanel)} className={`rounded-none w-full ${settingsPanel === panel ? "text-white border-solid border-l-[2px] border-l-orange-400" : "text-zinc-400"}`} variant="ghost" key={settingsPanel}>
+              {settingsPanel}
+            </Button>
+          ))}
+        </div>
+        <div className='px-6 py-8 w-5/6'>
+          {panel === "General" && <General company={company} currentMember={currentMember} />}
+          {panel === "Roles" && <Roles company={company} currentMember={currentMember} />}
+          {panel === "Invitations" && <Invitations company={company} currentMember={currentMember} />}
+          {panel === "Projects" && <Projects company={company} currentMember={currentMember} />}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -181,7 +186,7 @@ function Projects({ currentMember, company }: SettingsProps) {
   return (
     <div className='flex flex-col gap-y-4'>
       {company.projects.map(project => (
-        <Project project={project} key={project.id}/>
+        <Project project={project} key={project.id} />
       ))}
     </div>
   )
@@ -196,11 +201,11 @@ function Project({ project }: { project: Project }) {
   const [title, setTitle] = useState(project.title);
   const [description, setDescription] = useState<string>(project.description || "");
   const [priority, setPriority] = useState(project.priority)
-  
+
   async function handleSave() {
     setSaving(true);
 
-    return await editProject({ projectId: project.id, data: { title, description, priority }}).then((p) => router.push(`/dashboard/${project.companyId}/${p.title}`)).finally(() => setSaving(false));
+    return await editProject({ projectId: project.id, data: { title, description, priority } }).then((p) => router.push(`/dashboard/${project.companyId}/${p.title}`)).finally(() => setSaving(false));
   }
 
   async function handleDelete() {
